@@ -4,17 +4,27 @@
 
 import 'package:flutter/material.dart';
 import 'package:bouncing_cats/add_custom_cat.dart';
-import 'package:bouncing_cats/cat.dart';
+import 'package:universal_platform/universal_platform.dart';
+import 'package:bouncing_cats/add_file_cat.dart';
 
+/// Creates a floating action button that when pressed either shows or hides
+/// the buttons for adding a cat, custom cat, or file cat
+/// The custom cat button is only shown on Web, Android, or IOS, as it requires
+/// the camera.
+/// onClick runs when a new cat can be added
+/// addCat runs when a custom cat should be added
+/// addFileCat runs when a file cat should be added
 class AdditionMenu extends StatefulWidget {
   final Function onClick;
   final Function(Image image) addCat;
+  final Function(Image image) addFileCat;
   final Color buttonDefaultColor;
 
   AdditionMenu({
     Key? key,
     required this.onClick,
     required this.addCat,
+    required this.addFileCat,
     required this.buttonDefaultColor,
   }) : super(key: key);
 
@@ -26,11 +36,11 @@ class AdditionMenu extends StatefulWidget {
 
 class _AdditionMenuState extends State<AdditionMenu>
     with SingleTickerProviderStateMixin {
+  // animations
   late final AnimationController _animationController;
   late final Animation<double> _buttonMove;
   late final Animation<double> _animateIcon;
   late final Animation<Color?> _buttonColor;
-
   final Curve _curve = Curves.easeOut;
   final double _height = 56.0;
   bool isOpen = false;
@@ -38,6 +48,8 @@ class _AdditionMenuState extends State<AdditionMenu>
   @override
   void initState() {
     super.initState();
+
+    // init animation controller
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 500),
@@ -45,8 +57,13 @@ class _AdditionMenuState extends State<AdditionMenu>
     _animationController.addListener(() {
       setState(() {});
     });
+
+    // open close animated icon
     _animateIcon =
         Tween<double>(begin: 0, end: 1).animate(_animationController);
+
+    // open close animated color, uses pased default buttons color
+    // and red
     _buttonColor = ColorTween(
       begin: Color.fromARGB(
         255,
@@ -56,6 +73,8 @@ class _AdditionMenuState extends State<AdditionMenu>
       ),
       end: Colors.red,
     ).animate(_animationController);
+
+    // animatebuttons moving up and down
     _buttonMove = Tween<double>(
       begin: _height,
       end: -14.0,
@@ -75,6 +94,7 @@ class _AdditionMenuState extends State<AdditionMenu>
     super.dispose();
   }
 
+  // show or hide buttons using animation
   void _animate() {
     if (isOpen) {
       _animationController.reverse();
@@ -84,12 +104,27 @@ class _AdditionMenuState extends State<AdditionMenu>
     isOpen = !isOpen;
   }
 
-  AddCustomCat _addCustomCatPicture() {
-    return AddCustomCat(
-      addCat: widget.addCat,
+  // add custom cat using device camera if is web, andoid or ios
+  // else show nothing
+  Widget _addCustomCatPicture() {
+    if (UniversalPlatform.isWeb ||
+        UniversalPlatform.isAndroid ||
+        UniversalPlatform.isIOS) {
+      return AddCustomCat(
+        addCat: widget.addCat,
+      );
+    }
+    return SizedBox.shrink();
+  }
+
+  // add a cat(s) from a file
+  AddFileCat _addFileCat() {
+    return AddFileCat(
+      addFileCat: widget.addFileCat,
     );
   }
 
+  // add a random cat using the cat images local to the app
   FloatingActionButton _addCatButton() {
     return FloatingActionButton(
       child: Icon(
@@ -101,6 +136,7 @@ class _AdditionMenuState extends State<AdditionMenu>
     );
   }
 
+  // show and hide buttons, and change the button icon and color
   FloatingActionButton _toggle() {
     return FloatingActionButton(
       backgroundColor: _buttonColor.value,
@@ -117,14 +153,25 @@ class _AdditionMenuState extends State<AdditionMenu>
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
+        // custom cat
+        Transform(
+          transform: Matrix4.translationValues(
+            0.0,
+            _buttonMove.value * 3,
+            0.0,
+          ),
+          child: _addCustomCatPicture(),
+        ),
+        // file cat
         Transform(
           transform: Matrix4.translationValues(
             0.0,
             _buttonMove.value * 2,
             0.0,
           ),
-          child: _addCustomCatPicture(),
+          child: _addFileCat(),
         ),
+        // random cat
         Transform(
           transform: Matrix4.translationValues(
             0.0,
@@ -133,6 +180,7 @@ class _AdditionMenuState extends State<AdditionMenu>
           ),
           child: _addCatButton(),
         ),
+        // show and hide buttons on pressed
         _toggle(),
       ],
     );

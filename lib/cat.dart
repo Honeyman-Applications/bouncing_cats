@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:bootstrap_typography2/bootstrap_typography2.dart';
 import 'package:bootstrap_like_modal/bootstrap_like_modal.dart';
 
+/// Cat is the image that moves within the bounds of the screen randomly
+/// ratio is the size the cat should be relative to the size of the screen
 class Cat extends StatefulWidget {
   final String name;
   final String presentVerb;
@@ -42,6 +44,8 @@ class CatState extends State<Cat> {
   @override
   void initState() {
     super.initState();
+
+    // create a BSModal that can be displayed when the cat is pressed
     _modal = BSModal(
       content: P(
         BSTextParams(
@@ -85,6 +89,8 @@ class CatState extends State<Cat> {
     ];
   }
 
+  // when called from an external source, update the new destination
+  // to a random value within the screen
   void update() {
     if (this.mounted) {
       setState(() {
@@ -94,20 +100,27 @@ class CatState extends State<Cat> {
     }
   }
 
+  // returns the width if it is smaller than the height; otherwise the
+  // height is returned
   double _getDim(double width, double height) {
     return width <= height ? width : height;
   }
 
   @override
   Widget build(BuildContext context) {
+    // get the width & height of the screen from the current context
     _maxX = MediaQuery.of(context).size.width -
         widget.padding.left -
         widget.padding.right;
     _maxY = MediaQuery.of(context).size.height -
         widget.padding.top -
         widget.padding.bottom;
+
+    // calculate the possible width and height using the passed ratio
     double width = _maxX / widget.ratio;
     double height = _maxY / widget.ratio;
+
+    // ensure the cat stays in the bounds of the screen
     if (_x >= _maxX - _getDim(width, height)) {
       _x = _maxX - _getDim(width, height);
     }
@@ -118,9 +131,13 @@ class CatState extends State<Cat> {
     return AnimatedPositioned(
       left: _x,
       top: _y,
+
+      // set width and height to the smaller of the two
       width: _getDim(width, height),
       height: _getDim(width, height),
       duration: widget.animationDuration,
+
+      // show modal on cat pressed
       child: GestureDetector(
         onTap: () {
           _modal.show(context);
