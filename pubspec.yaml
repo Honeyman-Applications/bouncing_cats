@@ -24,3 +24,12 @@ flutter:
     - assets/verbs.json
     - assets/cats/
   uses-material-design: true
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  msix: ^2.6.2
+
+msix_config:
+  display_name: "Bouncing Cats"
+  publisher_display_name: Honeyman Applications
