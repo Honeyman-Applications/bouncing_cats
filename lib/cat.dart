@@ -7,12 +7,14 @@ import 'package:bootstrap_like_modal/bootstrap_like_modal.dart';
 /// ratio is the size the cat should be relative to the size of the screen
 class Cat extends StatefulWidget {
   final String name;
-  final String presentVerb;
-  final String pastVerb;
+  late final String presentVerb;
+  late final String pastVerb;
   final Image image;
   final int ratio;
   final Duration animationDuration;
   final EdgeInsets padding;
+  final String? description;
+  late final bool isCustomDescription;
 
   Cat({
     GlobalKey<CatState>? key,
@@ -25,7 +27,26 @@ class Cat extends StatefulWidget {
     this.animationDuration = const Duration(
       seconds: 1,
     ),
-  }) : super(key: key);
+    this.description = null,
+  }) : super(key: key) {
+    isCustomDescription = false;
+  }
+
+  Cat.customDescription({
+    GlobalKey<CatState>? key,
+    required this.name,
+    required this.image,
+    required this.padding,
+    this.ratio = 4,
+    this.animationDuration = const Duration(
+      seconds: 1,
+    ),
+    required this.description,
+  }) : super(key: key) {
+    presentVerb = "";
+    pastVerb = "";
+    isCustomDescription = true;
+  }
 
   @override
   CatState createState() {
@@ -45,11 +66,15 @@ class CatState extends State<Cat> {
   void initState() {
     super.initState();
 
+    // set random description, or a custom description
+    String description = widget.isCustomDescription
+        ? widget.description!
+        : "My name is: ${widget.name}, I like to ${widget.presentVerb}, and I used to like to be ${widget.pastVerb}.";
+
     // create a BSModal that can be displayed when the cat is pressed
     _modal = BSModal(
       content: P(
-        BSTextParams(
-            "My name is: ${widget.name}, I like to ${widget.presentVerb}, and I used to like to be ${widget.pastVerb}."),
+        BSTextParams(description),
       ),
     );
     _modal.title = Row(

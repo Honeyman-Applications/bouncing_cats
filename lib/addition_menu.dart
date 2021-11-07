@@ -16,8 +16,16 @@ import 'package:bouncing_cats/add_file_cat.dart';
 /// addFileCat runs when a file cat should be added
 class AdditionMenu extends StatefulWidget {
   final Function onClick;
-  final Function(Image image) addCat;
-  final Function(Image image) addFileCat;
+  final Function(
+    Image image, {
+    required String name,
+    required String description,
+  }) addCat;
+  final Function(
+    Image image, {
+    required String name,
+    required String description,
+  }) addFileCat;
   final Color buttonDefaultColor;
 
   AdditionMenu({

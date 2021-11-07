@@ -5,11 +5,16 @@
  */
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:bouncing_cats/set_custom_cat_values.dart';
 
 /// This class allows users to upload image files on a button press
 /// addFileCat is called everytime an image is ready to be added as a cat
 class AddFileCat extends StatefulWidget {
-  final Function(Image image) addFileCat;
+  final Function(
+    Image image, {
+    required String name,
+    required String description,
+  }) addFileCat;
 
   AddFileCat({
     Key? key,
@@ -23,9 +28,20 @@ class AddFileCat extends StatefulWidget {
 }
 
 class _AddFileCatState extends State<AddFileCat> {
+  late List<SetCustomCatValues> _setCustomCatValues;
+
   @override
   void initState() {
     super.initState();
+    _setCustomCatValues = <SetCustomCatValues>[];
+  }
+
+  @override
+  void dispose() {
+    _setCustomCatValues.forEach((element) {
+      element.dispose();
+    });
+    super.dispose();
   }
 
   @override
@@ -44,9 +60,22 @@ class _AddFileCatState extends State<AddFileCat> {
 
         // load image(s) as cats if one or more was selected
         if (result != null) {
-          result.files.forEach((element) {
-            widget.addFileCat(Image.memory(element.bytes!));
-          });
+          result.files.forEach(
+            (element) {
+              _setCustomCatValues.add(
+                SetCustomCatValues(
+                  context: context,
+                  onSubmit: (name, description) {
+                    widget.addFileCat(
+                      Image.memory(element.bytes!),
+                      name: name,
+                      description: description,
+                    );
+                  },
+                ),
+              );
+            },
+          );
         }
       },
     );

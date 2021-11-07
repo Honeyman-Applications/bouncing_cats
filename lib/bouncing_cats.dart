@@ -162,19 +162,18 @@ class _BouncingCatsState extends State<BouncingCats> {
                       },
 
                       // added custom cat on pressed, using device camera
-                      addCat: (image) async {
+                      addCat: (
+                        image, {
+                        required description,
+                        required name,
+                      }) async {
                         setState(() {
                           _cats.add(
-                            Cat(
+                            Cat.customDescription(
                               key: _getKey(),
                               padding: MediaQuery.of(aboveSafeContext).padding,
-                              name:
-                                  _catNames[_random.nextInt(_catNames.length)],
-                              presentVerb:
-                                  _verbs[_random.nextInt(_verbs.length)]
-                                      ["present"],
-                              pastVerb: _verbs[_random.nextInt(_verbs.length)]
-                                  ["past"],
+                              name: name,
+                              description: description,
                               image: image,
                             ),
                           );
@@ -182,19 +181,18 @@ class _BouncingCatsState extends State<BouncingCats> {
                       },
 
                       // add a cat from a image file on the devcie
-                      addFileCat: (image) async {
+                      addFileCat: (
+                        image, {
+                        required description,
+                        required name,
+                      }) async {
                         setState(() {
                           _cats.add(
-                            Cat(
+                            Cat.customDescription(
                               key: _getKey(),
                               padding: MediaQuery.of(aboveSafeContext).padding,
-                              name:
-                                  _catNames[_random.nextInt(_catNames.length)],
-                              presentVerb:
-                                  _verbs[_random.nextInt(_verbs.length)]
-                                      ["present"],
-                              pastVerb: _verbs[_random.nextInt(_verbs.length)]
-                                  ["past"],
+                              name: name,
+                              description: description,
                               image: image,
                             ),
                           );

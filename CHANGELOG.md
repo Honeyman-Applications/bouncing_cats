@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Added ability to set custom value displayed when custom or file cat is selected
+
 ## 1.1.0
 
 - Added Windows support
