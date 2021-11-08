@@ -44,6 +44,31 @@ class _AddFileCatState extends State<AddFileCat> {
     super.dispose();
   }
 
+  void _loadCats(
+    BuildContext context,
+    List<PlatformFile> files,
+    int currentIndex,
+  ) {
+    if (currentIndex >= 0) {
+      _setCustomCatValues.add(
+        SetCustomCatValues(
+          context: context,
+          image: Image.memory(files[currentIndex].bytes!),
+          onComplete: (name, description, submitted) {
+            if (submitted) {
+              widget.addFileCat(
+                Image.memory(files[currentIndex].bytes!),
+                name: name,
+                description: description,
+              );
+            }
+            _loadCats(context, files, --currentIndex);
+          },
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
@@ -60,22 +85,7 @@ class _AddFileCatState extends State<AddFileCat> {
 
         // load image(s) as cats if one or more was selected
         if (result != null) {
-          result.files.forEach(
-            (element) {
-              _setCustomCatValues.add(
-                SetCustomCatValues(
-                  context: context,
-                  onSubmit: (name, description) {
-                    widget.addFileCat(
-                      Image.memory(element.bytes!),
-                      name: name,
-                      description: description,
-                    );
-                  },
-                ),
-              );
-            },
-          );
+          _loadCats(context, result.files, result.files.length - 1);
         }
       },
     );

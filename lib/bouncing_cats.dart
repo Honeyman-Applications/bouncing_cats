@@ -162,25 +162,7 @@ class _BouncingCatsState extends State<BouncingCats> {
                       },
 
                       // added custom cat on pressed, using device camera
-                      addCat: (
-                        image, {
-                        required description,
-                        required name,
-                      }) async {
-                        setState(() {
-                          _cats.add(
-                            Cat.customDescription(
-                              key: _getKey(),
-                              padding: MediaQuery.of(aboveSafeContext).padding,
-                              name: name,
-                              description: description,
-                              image: image,
-                            ),
-                          );
-                        });
-                      },
-
-                      // add a cat from a image file on the devcie
+                      // add a cat from a image file on the device
                       addFileCat: (
                         image, {
                         required description,

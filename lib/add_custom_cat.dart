@@ -58,14 +58,19 @@ class _AddCustomCatState extends State<AddCustomCat> {
         if (!UniversalPlatform.isWeb) {
           _setCustomCatValues = SetCustomCatValues(
             context: context,
-            onSubmit: (name, description) async {
-              widget.addCat(
-                await Image.file(
-                  File(image!.path),
-                ),
-                name: name,
-                description: description,
-              );
+            image: await Image.file(
+              File(image!.path),
+            ),
+            onComplete: (name, description, submitted) async {
+              if (submitted) {
+                widget.addCat(
+                  await Image.file(
+                    File(image.path),
+                  ),
+                  name: name,
+                  description: description,
+                );
+              }
             },
           );
 
@@ -73,14 +78,19 @@ class _AddCustomCatState extends State<AddCustomCat> {
         } else {
           _setCustomCatValues = SetCustomCatValues(
             context: context,
-            onSubmit: (name, description) async {
-              widget.addCat(
-                await Image.network(
-                  image!.path,
-                ),
-                name: name,
-                description: description,
-              );
+            image: await Image.network(
+              image!.path,
+            ),
+            onComplete: (name, description, submitted) async {
+              if (submitted) {
+                widget.addCat(
+                  await Image.network(
+                    image.path,
+                  ),
+                  name: name,
+                  description: description,
+                );
+              }
             },
           );
         }

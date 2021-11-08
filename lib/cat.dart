@@ -15,6 +15,7 @@ class Cat extends StatefulWidget {
   final EdgeInsets padding;
   final String? description;
   late final bool isCustomDescription;
+  final BorderRadius borderRadius;
 
   Cat({
     GlobalKey<CatState>? key,
@@ -28,6 +29,7 @@ class Cat extends StatefulWidget {
       seconds: 1,
     ),
     this.description = null,
+    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
   }) : super(key: key) {
     isCustomDescription = false;
   }
@@ -42,6 +44,7 @@ class Cat extends StatefulWidget {
       seconds: 1,
     ),
     required this.description,
+    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
   }) : super(key: key) {
     presentVerb = "";
     pastVerb = "";
@@ -171,7 +174,10 @@ class CatState extends State<Cat> {
           child: Center(
             child: Stack(
               children: [
-                widget.image,
+                ClipRRect(
+                  borderRadius: widget.borderRadius,
+                  child: widget.image,
+                ),
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(

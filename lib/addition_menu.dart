@@ -20,18 +20,12 @@ class AdditionMenu extends StatefulWidget {
     Image image, {
     required String name,
     required String description,
-  }) addCat;
-  final Function(
-    Image image, {
-    required String name,
-    required String description,
   }) addFileCat;
   final Color buttonDefaultColor;
 
   AdditionMenu({
     Key? key,
     required this.onClick,
-    required this.addCat,
     required this.addFileCat,
     required this.buttonDefaultColor,
   }) : super(key: key);
@@ -119,7 +113,7 @@ class _AdditionMenuState extends State<AdditionMenu>
         UniversalPlatform.isAndroid ||
         UniversalPlatform.isIOS) {
       return AddCustomCat(
-        addCat: widget.addCat,
+        addCat: widget.addFileCat,
       );
     }
     return SizedBox.shrink();

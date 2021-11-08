@@ -1,6 +1,8 @@
 ## 1.2.0
 
 - Added ability to set custom value displayed when custom or file cat is selected
+- Rounded cat image corners
+- Preview custom/file cat image
 
 ## 1.1.0
 
