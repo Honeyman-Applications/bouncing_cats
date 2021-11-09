@@ -1,3 +1,9 @@
+## 1.2.1
+
+- Added published files to git
+    - web
+    - windows
+
 ## 1.2.0
 
 - Added ability to set custom value displayed when custom or file cat is selected
