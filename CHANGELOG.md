@@ -1,3 +1,10 @@
+## 1.2.2
+
+- Removed from git
+    - node_modules from published folder
+    - .gcloudignore from published folder
+  - Updated .gitignore
+
 ## 1.2.1
 
 - Added published files to git
