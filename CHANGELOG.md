@@ -1,3 +1,7 @@
+## 1.3.1
+
+- Updated readme so link to msix for windows points to github not google drive
+
 ## 1.3.0
 
 - Added ability to delete cats
