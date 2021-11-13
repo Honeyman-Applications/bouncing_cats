@@ -32,6 +32,29 @@ class _BouncingCatsState extends State<BouncingCats> {
     // say is first time loading, and create the title of the app
     // note that the title is not built at this time
     _firstLoad = true;
+    _initCatsArray();
+
+    // int cat keys, random
+    _catKeys = <GlobalKey<CatState>>[];
+    _random = Random();
+
+    // start periodic timer, which says when to change position
+    _catUpdatePeriodic();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  /// sets the title and subtitle text to the first
+  /// element on the cat array
+  void _initCatsArray() {
     _cats = <Widget>[
       BSContainer(
         children: [
@@ -57,23 +80,6 @@ class _BouncingCatsState extends State<BouncingCats> {
         ],
       ),
     ];
-
-    // int cat keys, random
-    _catKeys = <GlobalKey<CatState>>[];
-    _random = Random();
-
-    // start periodic timer, which says when to change position
-    _catUpdatePeriodic();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   /// generates a key for a cat, and adds the key to the _catKeys list
@@ -117,6 +123,30 @@ class _BouncingCatsState extends State<BouncingCats> {
     );
   }
 
+  /// deletes a cat
+  /// determines which cat based on it's key
+  void _deleteCat(GlobalKey<CatState> key) {
+    setState(() {
+      for (int i = 0; i < _cats.length; i++) {
+        if (_cats[i].key == key) {
+          _cats.removeAt(i);
+          _catKeys.remove(key);
+        }
+      }
+    });
+  }
+
+  /// removes all cats from the screen
+  /// and removes all the cat keys
+  /// inits cat array so the title and sub title is there
+  void _reset() {
+    setState(() {
+      _catKeys.clear();
+      _cats.clear();
+      _initCatsArray();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -140,25 +170,31 @@ class _BouncingCatsState extends State<BouncingCats> {
                     floatingActionButton: AdditionMenu(
                       buttonDefaultColor:
                           Theme.of(context).colorScheme.secondary,
-
+                      onReset: _reset,
                       // add random cat button on pressed
                       onClick: () async {
-                        setState(() {
-                          _cats.add(
-                            Cat(
-                              key: _getKey(),
-                              padding: MediaQuery.of(aboveSafeContext).padding,
-                              name:
-                                  _catNames[_random.nextInt(_catNames.length)],
-                              presentVerb:
-                                  _verbs[_random.nextInt(_verbs.length)]
-                                      ["present"],
-                              pastVerb: _verbs[_random.nextInt(_verbs.length)]
-                                  ["past"],
-                              image: _getCatImage(),
-                            ),
-                          );
-                        });
+                        setState(
+                          () {
+                            _cats.add(
+                              Cat(
+                                key: _getKey(),
+                                padding:
+                                    MediaQuery.of(aboveSafeContext).padding,
+                                name: _catNames[
+                                    _random.nextInt(_catNames.length)],
+                                presentVerb:
+                                    _verbs[_random.nextInt(_verbs.length)]
+                                        ["present"],
+                                pastVerb: _verbs[_random.nextInt(_verbs.length)]
+                                    ["past"],
+                                image: _getCatImage(),
+                                onDelete: (key) {
+                                  _deleteCat(key);
+                                },
+                              ),
+                            );
+                          },
+                        );
                       },
 
                       // added custom cat on pressed, using device camera
@@ -168,17 +204,23 @@ class _BouncingCatsState extends State<BouncingCats> {
                         required description,
                         required name,
                       }) async {
-                        setState(() {
-                          _cats.add(
-                            Cat.customDescription(
-                              key: _getKey(),
-                              padding: MediaQuery.of(aboveSafeContext).padding,
-                              name: name,
-                              description: description,
-                              image: image,
-                            ),
-                          );
-                        });
+                        setState(
+                          () {
+                            _cats.add(
+                              Cat.customDescription(
+                                key: _getKey(),
+                                padding:
+                                    MediaQuery.of(aboveSafeContext).padding,
+                                name: name,
+                                description: description,
+                                image: image,
+                                onDelete: (key) {
+                                  _deleteCat(key);
+                                },
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                   );

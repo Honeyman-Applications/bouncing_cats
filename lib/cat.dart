@@ -17,8 +17,12 @@ class Cat extends StatefulWidget {
   late final bool isCustomDescription;
   final BorderRadius borderRadius;
 
+  final GlobalKey<CatState>? key;
+
+  final Function(GlobalKey<CatState>) onDelete;
+
   Cat({
-    GlobalKey<CatState>? key,
+    required this.key,
     required this.name,
     required this.presentVerb,
     required this.pastVerb,
@@ -30,12 +34,13 @@ class Cat extends StatefulWidget {
     ),
     this.description = null,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    required this.onDelete,
   }) : super(key: key) {
     isCustomDescription = false;
   }
 
   Cat.customDescription({
-    GlobalKey<CatState>? key,
+    required this.key,
     required this.name,
     required this.image,
     required this.padding,
@@ -45,6 +50,7 @@ class Cat extends StatefulWidget {
     ),
     required this.description,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    required this.onDelete,
   }) : super(key: key) {
     presentVerb = "";
     pastVerb = "";
@@ -76,6 +82,9 @@ class CatState extends State<Cat> {
 
     // create a BSModal that can be displayed when the cat is pressed
     _modal = BSModal(
+      bsModalActionsRowOptions: BSModalActionsRowOptions(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      ),
       content: P(
         BSTextParams(description),
       ),
@@ -92,7 +101,7 @@ class CatState extends State<Cat> {
           icon: const Icon(
             Icons.close,
           ),
-          color: Colors.red,
+          color: Colors.yellowAccent,
           onPressed: () {
             _modal.hide();
           },
@@ -108,12 +117,29 @@ class CatState extends State<Cat> {
           ),
         ),
         child: P(
-          BSTextParams("Close"),
+          BSTextParams("Delete"),
+        ),
+        onPressed: () {
+          _modal.hide();
+          widget.onDelete(widget.key!);
+        },
+      ),
+      ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(
+            Colors.yellowAccent,
+          ),
+        ),
+        child: P(
+          BSTextParams(
+            "Close",
+            color: Colors.black,
+          ),
         ),
         onPressed: () {
           _modal.hide();
         },
-      )
+      ),
     ];
   }
 
@@ -166,34 +192,37 @@ class CatState extends State<Cat> {
       duration: widget.animationDuration,
 
       // show modal on cat pressed
-      child: GestureDetector(
-        onTap: () {
-          _modal.show(context);
-        },
-        child: Container(
-          child: Center(
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: widget.borderRadius,
-                  child: widget.image,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 1,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () {
+            _modal.show(context);
+          },
+          child: Container(
+            child: Center(
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: widget.borderRadius,
+                    child: widget.image,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                    ),
+                    child: P(
+                      BSTextParams(
+                        widget.name,
+                        backgroundColor: Colors.white,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                  child: P(
-                    BSTextParams(
-                      widget.name,
-                      backgroundColor: Colors.white,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

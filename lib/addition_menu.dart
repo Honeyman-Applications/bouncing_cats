@@ -22,12 +22,14 @@ class AdditionMenu extends StatefulWidget {
     required String description,
   }) addFileCat;
   final Color buttonDefaultColor;
+  final Function() onReset;
 
   AdditionMenu({
     Key? key,
     required this.onClick,
     required this.addFileCat,
     required this.buttonDefaultColor,
+    required this.onReset,
   }) : super(key: key);
 
   @override
@@ -73,10 +75,10 @@ class _AdditionMenuState extends State<AdditionMenu>
         widget.buttonDefaultColor.green,
         widget.buttonDefaultColor.blue,
       ),
-      end: Colors.red,
+      end: Colors.yellowAccent,
     ).animate(_animationController);
 
-    // animatebuttons moving up and down
+    // animate buttons moving up and down
     _buttonMove = Tween<double>(
       begin: _height,
       end: -14.0,
@@ -138,6 +140,18 @@ class _AdditionMenuState extends State<AdditionMenu>
     );
   }
 
+  FloatingActionButton _reset() {
+    return FloatingActionButton(
+      backgroundColor: Colors.redAccent,
+      child: Icon(
+        Icons.remove,
+      ),
+      onPressed: () {
+        widget.onReset();
+      },
+    );
+  }
+
   // show and hide buttons, and change the button icon and color
   FloatingActionButton _toggle() {
     return FloatingActionButton(
@@ -154,6 +168,7 @@ class _AdditionMenuState extends State<AdditionMenu>
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         // custom cat
         Transform(
@@ -182,8 +197,22 @@ class _AdditionMenuState extends State<AdditionMenu>
           ),
           child: _addCatButton(),
         ),
-        // show and hide buttons on pressed
-        _toggle(),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Transform(
+              transform: Matrix4.translationValues(
+                _buttonMove.value,
+                0.0,
+                0.0,
+              ),
+              child: _reset(),
+            ),
+            // show and hide buttons on pressed
+            _toggle(),
+          ],
+        ),
       ],
     );
   }

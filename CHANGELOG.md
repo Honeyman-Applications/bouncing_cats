@@ -1,9 +1,15 @@
+## 1.3.0
+
+- Added ability to delete cats
+- Close color is yellow, delete is red
+- Added reset button
+
 ## 1.2.2
 
 - Removed from git
     - node_modules from published folder
     - .gcloudignore from published folder
-  - Updated .gitignore
+    - Updated .gitignore
 
 ## 1.2.1
 
